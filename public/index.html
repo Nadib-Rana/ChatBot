@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+      }
+      .chatContainer {
+        width: 80%;
+        margin: auto;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+      .messageBlock {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .UserText {
+        background-color: #d1e7dd;
+        text-align: right;
+      }
+      .AiText {
+        background-color: #f8d7da;
+        text-align: left;
+      }
+      #inputContainer {
+        display: flex;
+        margin-top: 10px;
+        position: relative;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        
+      }
+      #sendButton {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        background: linear-gradient(
+          135deg,
+          #6a11cb,
+          #2575fc
+        ); /* Gradient background */
+        color: white;
+        cursor: pointer;
+        position: relative; /* Position for the shadow effect */
+        transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effect */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+      }
+
+      #sendButton:hover {
+        transform: translateY(-2px); /* Slight upward movement on hover */
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4); /* Increased shadow on hover */
+      }
+
+      #sendButton:active {
+        transform: translateY(1px); /* Button pressed effect */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Reduced shadow when pressed */
+      }
+    </style>
+  </head>
+  <body>
+    <section class="chatContainer" id="chatContainer">
+      <div id="chatBlock"></div>
+    </section>
+
+    <div id="inputContainer">
+      <input type="text" id="userInput" placeholder="Type your message..." />
+      <button id="sendButton">Send</button>
+    </div>
+
+    <script>
+      const sendButton = document.getElementById("sendButton");
+      const userInput = document.getElementById("userInput");
+      const chatBlock = document.getElementById("chatBlock");
+      const chatContainer = document.getElementById("chatContainer");
+
+      sendButton.addEventListener("click", async () => {
+        const userMessage = userInput.value;
+        if (!userMessage) return; // Prevent sending empty messages
+
+        // Create a new message block for each user input
+        const messageBlock = document.createElement("div");
+        messageBlock.classList.add("messageBlock");
+        messageBlock.innerHTML += `<div class="UserText">User: ${userMessage}</div>`;
+        chatBlock.appendChild(messageBlock);
+        userInput.value = "";
+
+        // Scroll to the bottom of the chat
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        const response = await fetch("/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message: userMessage }),
+        });
+
+        const data = await response.json();
+        messageBlock.innerHTML += `<div class="AiText">AI: ${data.response}</div>`;
+
+        // Scroll to the bottom of the chat
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      });
+    </script>
+  </body>
+</html>
