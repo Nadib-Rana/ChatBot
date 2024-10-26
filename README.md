@@ -1,5 +1,3 @@
-
-```
 # 🗨️ ChatBot Project
 
 A conversational AI chatbot built with **Node.js**, **Express**, and **Google Generative AI API**. This project helps developers create a chatbot that responds intelligently to user messages. The chatbot is designed to assist with language skills, providing concise and accurate responses to users' queries.
